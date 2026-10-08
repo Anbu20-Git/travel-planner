@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Share Trip - TravelPlanner</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            background:
+                linear-gradient(
+                    rgba(0, 50, 80, 0.75),
+                    rgba(0, 30, 60, 0.85)
+                ),
+                url("https://images.unsplash.com/photo-1469474968028-56623f02e42e");
+
+            background-size: cover;
+            background-position: center;
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: white;
+        }
+
+        .share-container {
+            width: 90%;
+            max-width: 650px;
+
+            background: rgba(255, 255, 255, 0.12);
+
+            backdrop-filter: blur(12px);
+
+            border-radius: 20px;
+
+            padding: 40px;
+
+            text-align: center;
+
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .trip-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .share-box {
+            display: flex;
+            gap: 10px;
+
+            margin-top: 25px;
+        }
+
+        .share-box input {
+            flex: 1;
+
+            padding: 14px;
+
+            border: none;
+            border-radius: 10px;
+
+            font-size: 14px;
+        }
+
+        .copy-btn {
+            border: none;
+
+            padding: 14px 20px;
+
+            border-radius: 10px;
+
+            background: #00b4d8;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: #0096c7;
+        }
+
+        .back-btn {
+            display: inline-block;
+
+            margin-top: 25px;
+
+            padding: 12px 25px;
+
+            background: white;
+
+            color: #0077b6;
+
+            text-decoration: none;
+
+            border-radius: 25px;
+
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #e8f8ff;
+        }
+
+        #copyMessage {
+            margin-top: 15px;
+
+            color: #90ee90;
+
+            font-weight: bold;
+
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+
+            .share-container {
+                padding: 25px;
+            }
+
+            .share-box {
+                flex-direction: column;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="share-container">
+
+        <div class="icon">
+            🔗
+        </div>
+
+        <h1>
+            Trip Ready to Share!
+        </h1>
+
+        <p>
+            Share your travel plan with friends and family.
+        </p>
+
+        <div class="trip-name"
+             th:text="${trip.tripName}">
+            My Trip
+        </div>
+
+        <p>
+            Copy the link below and send it to anyone you want.
+        </p>
+
+        <div class="share-box">
+
+            <input
+                type="text"
+                id="shareUrl"
+                th:value="${shareUrl}"
+                readonly>
+
+            <button
+                class="copy-btn"
+                onclick="copyLink()">
+
+                📋 Copy
+
+            </button>
+
+        </div>
+
+        <div id="copyMessage">
+            ✅ Link copied successfully!
+        </div>
+
+        <a
+            href="/trips"
+            class="back-btn">
+
+            ← Back to My Trips
+
+        </a>
+
+    </div>
+
+
+    <script>
+
+        function copyLink() {
+
+            const shareUrl =
+                document.getElementById("shareUrl");
+
+            navigator.clipboard.writeText(
+                shareUrl.value
+            );
+
+            document.getElementById(
+                "copyMessage"
+            ).style.display = "block";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

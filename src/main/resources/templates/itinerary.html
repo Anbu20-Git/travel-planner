@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TravelPlanner - Itinerary</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 86%;
+            margin: 40px auto;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #023e8a;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+        }
+
+        .success {
+            background: #d8f3dc;
+            color: #2d6a4f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+        }
+
+        .form-box h2 {
+            color: #0077b6;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .add-btn {
+            margin-top: 20px;
+            background: #0077b6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .add-btn:hover {
+            background: #023e8a;
+        }
+
+        .section-title {
+            color: #023e8a;
+            margin-bottom: 20px;
+        }
+
+        .itinerary-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .activity-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #00b4d8;
+        }
+
+        .day {
+            display: inline-block;
+            background: #caf0f8;
+            color: #0077b6;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .activity-card h3 {
+            color: #0077b6;
+            margin-bottom: 10px;
+        }
+
+        .activity-info {
+            color: #555;
+            margin: 7px 0;
+        }
+
+        .empty {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 18px;
+            color: #666;
+        }
+
+        footer {
+            margin-top: 60px;
+            background: #023e8a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- Navbar -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            ✈️ TravelPlanner
+        </div>
+
+        <div class="nav-links">
+
+            <a href="/trips">
+                My Trips
+            </a>
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="container">
+
+        <!-- Trip Header -->
+
+        <div class="page-header">
+
+            <h1>
+                🗺️
+                <span th:text="${trip.tripName}">
+                    My Trip
+                </span>
+            </h1>
+
+            <p>
+
+                🌍
+                <span th:text="${trip.destination.name}">
+                    Paris
+                </span>
+
+                ,
+
+                <span th:text="${trip.destination.country}">
+                    France
+                </span>
+
+            </p>
+
+        </div>
+
+
+        <!-- Success -->
+
+        <div class="success"
+             th:if="${success}"
+             th:text="${success}">
+        </div>
+
+
+        <!-- Add Activity -->
+
+        <div class="form-box">
+
+            <h2>
+                ➕ Add Itinerary Activity
+            </h2>
+
+            <form action="/itinerary/create"
+                  method="post">
+
+                <input type="hidden"
+                       name="tripId"
+                       th:value="${trip.id}">
+
+                <div class="form-grid">
+
+                    <!-- Day -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Day Number
+                        </label>
+
+                        <input
+                            type="number"
+                            name="dayNumber"
+                            min="1"
+                            placeholder="Example: 1"
+                            required>
+
+                    </div>
+
+
+                    <!-- Time -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Activity Time
+                        </label>
+
+                        <input
+                            type="time"
+                            name="activityTime"
+                            required>
+
+                    </div>
+
+
+                    <!-- Activity -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Activity
+                        </label>
+
+                        <input
+                            type="text"
+                            name="activity"
+                            placeholder="Example: Visit Eiffel Tower"
+                            required>
+
+                    </div>
+
+
+                    <!-- Location -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            name="location"
+                            placeholder="Example: Champ de Mars"
+                            required>
+
+                    </div>
+
+
+                    <!-- Description -->
+
+                    <div class="form-group full-width">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            placeholder="Describe your activity..."
+                            required></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="add-btn">
+
+                    + Add Activity
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- Existing Activities -->
+
+        <h2 class="section-title">
+            📅 Your Itinerary
+        </h2>
+
+
+        <div class="itinerary-list"
+             th:if="${not #lists.isEmpty(itineraries)}">
+
+            <div class="activity-card"
+                 th:each="item : ${itineraries}"
+                 th:if="${item.trip.id == trip.id}">
+
+                <span class="day"
+                      th:text="'Day ' + ${item.dayNumber}">
+                    Day 1
+                </span>
+
+                <h3 th:text="${item.activity}">
+                    Visit Eiffel Tower
+                </h3>
+
+                <div class="activity-info">
+
+                    🕐
+                    <strong>Time:</strong>
+
+                    <span th:text="${item.activityTime}">
+                        09:00
+                    </span>
+
+                </div>
+
+                <div class="activity-info">
+
+                    📍
+                    <strong>Location:</strong>
+
+                    <span th:text="${item.location}">
+                        Paris
+                    </span>
+
+                </div>
+
+                <div class="activity-info">
+
+                    📝
+                    <strong>Details:</strong>
+
+                    <span th:text="${item.description}">
+                        Explore the destination.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Empty -->
+
+        <div class="empty"
+             th:if="${#lists.isEmpty(itineraries)}">
+
+            <h2>
+                📅 No activities yet
+            </h2>
+
+            <p>
+                Add your first activity above to build your itinerary.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        © 2026 TravelPlanner | Plan • Explore • Travel ✈️
+
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Route Planner - TravelPlanner</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef7ff, #f8fbff);
+            color: #222;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: #102a43;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #7dd3fc;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #102a43;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #627d98;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .form-card h2 {
+            color: #102a43;
+            margin-bottom: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #334e68;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #bcccdc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: #0077b6;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #023e8a;
+        }
+
+        .route-card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .route-title {
+            font-size: 19px;
+            font-weight: bold;
+            color: #102a43;
+            margin-bottom: 15px;
+        }
+
+        .route-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .info-box span {
+            display: block;
+            color: #627d98;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .info-box strong {
+            color: #102a43;
+        }
+
+        .empty {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 18px;
+            color: #627d98;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #0077b6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media (max-width: 750px) {
+            .form-grid,
+            .route-info {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">✈️ TravelPlanner</div>
+
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/trips">My Trips</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <a href="/trips" class="back">← Back to My Trips</a>
+
+    <div class="header">
+        <h1>🗺️ Route Planner</h1>
+
+        <p>
+            Plan your route for
+            <strong th:text="${trip.tripName}"></strong>
+        </p>
+
+        <p>
+            Destination:
+            <strong th:text="${trip.destination.name}"></strong>
+        </p>
+    </div>
+
+    <div th:if="${success}" class="success">
+        <span th:text="${success}"></span>
+    </div>
+
+    <div class="form-card">
+
+        <h2>➕ Add Route</h2>
+
+        <form action="/routes/create" method="post">
+
+            <input
+                type="hidden"
+                name="tripId"
+                th:value="${trip.id}">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Starting Location</label>
+
+                    <input
+                        type="text"
+                        name="source"
+                        placeholder="Example: Chennai Airport"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Destination</label>
+
+                    <input
+                        type="text"
+                        name="destination"
+                        placeholder="Example: Eiffel Tower"
+                        required>
+                </div>
+
+                <div class="form-group">
+
+                    <label>Travel Mode</label>
+
+                    <select name="travelMode" required>
+
+                        <option value="">
+                            Select travel mode
+                        </option>
+
+                        <option value="Flight">
+                            ✈️ Flight
+                        </option>
+
+                        <option value="Train">
+                            🚆 Train
+                        </option>
+
+                        <option value="Bus">
+                            🚌 Bus
+                        </option>
+
+                        <option value="Car">
+                            🚗 Car
+                        </option>
+
+                        <option value="Bike">
+                            🏍️ Bike
+                        </option>
+
+                        <option value="Walk">
+                            🚶 Walk
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Distance (KM)</label>
+
+                    <input
+                        type="number"
+                        name="distance"
+                        step="0.01"
+                        min="0"
+                        placeholder="Example: 12.5"
+                        required>
+
+                </div>
+
+                <div class="form-group full">
+
+                    <label>Estimated Travel Time</label>
+
+                    <input
+                        type="text"
+                        name="estimatedTime"
+                        placeholder="Example: 45 minutes"
+                        required>
+
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn">
+                🗺️ Add Route
+            </button>
+
+        </form>
+
+    </div>
+
+    <h2 style="color:#102a43; margin-bottom:20px;">
+        📍 Planned Routes
+    </h2>
+
+    <div th:if="${#lists.isEmpty(routes)}"
+         class="empty">
+
+        <h3>No routes added yet</h3>
+
+        <p style="margin-top:10px;">
+            Add your first route using the form above.
+        </p>
+
+    </div>
+
+    <div th:each="route : ${routes}"
+         class="route-card">
+
+        <div class="route-title">
+
+            📍
+            <span th:text="${route.source}"></span>
+
+            →
+
+            📍
+            <span th:text="${route.destination}"></span>
+
+        </div>
+
+        <div class="route-info">
+
+            <div class="info-box">
+
+                <span>Travel Mode</span>
+
+                <strong th:text="${route.travelMode}">
+                </strong>
+
+            </div>
+
+            <div class="info-box">
+
+                <span>Distance</span>
+
+                <strong>
+                    <span th:text="${route.distance}">
+                    </span>
+                    KM
+                </strong>
+
+            </div>
+
+            <div class="info-box">
+
+                <span>Estimated Time</span>
+
+                <strong th:text="${route.estimatedTime}">
+                </strong>
+
+            </div>
+
+            <div class="info-box">
+
+                <span>Trip</span>
+
+                <strong th:text="${route.trip.tripName}">
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

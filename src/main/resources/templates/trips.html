@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TravelPlanner - My Trips</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        /* Navbar */
+
+        .navbar {
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Main */
+
+        .container {
+            width: 86%;
+            margin: 40px auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-title h1 {
+            font-size: 35px;
+            color: #023e8a;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+        }
+
+        /* Create Trip */
+
+        .create-box {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+        }
+
+        .create-box h2 {
+            color: #0077b6;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .create-btn {
+            margin-top: 25px;
+            background: #0077b6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .create-btn:hover {
+            background: #023e8a;
+        }
+
+        /* Message */
+
+        .success {
+            background: #d8f3dc;
+            color: #2d6a4f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Trips */
+
+        .trips-title {
+            margin-bottom: 20px;
+            color: #023e8a;
+        }
+
+        .trip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .trip-card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transition: 0.3s;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .trip-card h3 {
+            color: #0077b6;
+            margin-bottom: 12px;
+        }
+
+        .trip-info {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .trip-info strong {
+            color: #333;
+        }
+
+        .status {
+            display: inline-block;
+            background: #caf0f8;
+            color: #0077b6;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .empty {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 18px;
+            color: #666;
+        }
+
+        /* Footer */
+
+        footer {
+            margin-top: 60px;
+            background: #023e8a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 18px 4%;
+            }
+
+            .container {
+                width: 92%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            ✈️ TravelPlanner
+        </div>
+
+        <div class="nav-links">
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Main -->
+
+    <div class="container">
+
+        <div class="page-title">
+
+            <h1>
+                🧳 My Trips
+            </h1>
+
+            <p>
+                Create and manage your travel adventures.
+            </p>
+
+        </div>
+
+
+        <!-- Success Message -->
+
+        <div class="success"
+             th:if="${success}"
+             th:text="${success}">
+        </div>
+
+
+        <!-- Create Trip -->
+
+        <div class="create-box">
+
+            <h2>
+                ✈️ Create New Trip
+            </h2>
+
+            <form action="/trips/create"
+                  method="post">
+
+                <div class="form-grid">
+
+                    <!-- Trip Name -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Trip Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="tripName"
+                            placeholder="Example: Paris Vacation"
+                            required>
+
+                    </div>
+
+
+                    <!-- Destination -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Destination
+                        </label>
+
+                        <select name="destinationId"
+                                required>
+
+                            <option value="">
+                                Select Destination
+                            </option>
+
+                            <option
+                                th:each="destination : ${destinations}"
+                                th:value="${destination.id}"
+                                th:text="${destination.name + ' - ' + destination.country}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Start Date -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Start Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="startDate"
+                            required>
+
+                    </div>
+
+
+                    <!-- End Date -->
+
+                    <div class="form-group">
+
+                        <label>
+                            End Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="endDate"
+                            required>
+
+                    </div>
+
+
+                    <!-- Budget -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Budget (₹)
+                        </label>
+
+                        <input
+                            type="number"
+                            name="budget"
+                            placeholder="Example: 50000"
+                            min="0"
+                            step="0.01"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="create-btn">
+
+                    + Create Trip
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- Existing Trips -->
+
+        <h2 class="trips-title">
+            Your Trips
+        </h2>
+
+
+        <div class="trip-grid"
+             th:if="${not #lists.isEmpty(trips)}">
+
+            <div class="trip-card"
+                 th:each="trip : ${trips}">
+
+                <h3 th:text="${trip.tripName}">
+                    Paris Vacation
+                </h3>
+
+
+                <div class="trip-info">
+
+                    🌍
+
+                    <strong>
+                        Destination:
+                    </strong>
+
+                    <span th:text="${trip.destination.name}">
+                        Paris
+                    </span>
+
+                </div>
+
+
+                <div class="trip-info">
+
+                    📅
+
+                    <strong>
+                        From:
+                    </strong>
+
+                    <span th:text="${trip.startDate}">
+                        2026-10-10
+                    </span>
+
+                </div>
+
+
+                <div class="trip-info">
+
+                    📅
+
+                    <strong>
+                        To:
+                    </strong>
+
+                    <span th:text="${trip.endDate}">
+                        2026-10-15
+                    </span>
+
+                </div>
+
+
+                <div class="trip-info">
+
+                    💰
+
+                    <strong>
+                        Budget:
+                    </strong>
+
+                    ₹<span th:text="${trip.budget}">
+                        50000
+                    </span>
+
+                </div>
+
+
+                <span class="status"
+                      th:text="${trip.status}">
+                    PLANNED
+                </span>
+
+
+                <!-- View Itinerary -->
+
+                <a th:href="@{/itinerary(tripId=${trip.id})}"
+                   style="
+                       display: inline-block;
+                       margin-top: 15px;
+                       background: #00b4d8;
+                       color: white;
+                       text-decoration: none;
+                       padding: 9px 18px;
+                       border-radius: 20px;
+                       font-size: 14px;
+                   ">
+
+                    📅 View Itinerary
+
+                </a>
+
+
+                <!-- Budget -->
+
+                <a th:href="@{/budget(tripId=${trip.id})}"
+                   style="
+                       display: inline-block;
+                       margin-top: 15px;
+                       margin-left: 8px;
+                       background: #0077b6;
+                       color: white;
+                       text-decoration: none;
+                       padding: 9px 18px;
+                       border-radius: 20px;
+                       font-size: 14px;
+                   ">
+
+                    💰 Budget
+
+                </a>
+
+
+                <!-- Transportation -->
+
+                <a th:href="@{/transportation(tripId=${trip.id})}"
+                   style="
+                       display: inline-block;
+                       margin-top: 15px;
+                       margin-left: 8px;
+                       background: #0096c7;
+                       color: white;
+                       text-decoration: none;
+                       padding: 9px 18px;
+                       border-radius: 20px;
+                       font-size: 14px;
+                   ">
+
+                    🚗 Transportation
+
+                </a>
+
+
+                <!-- Route Planner -->
+
+                <a th:href="@{/routes(tripId=${trip.id})}"
+                   style="
+                       display: inline-block;
+                       margin-top: 15px;
+                       margin-left: 8px;
+                       background: #0077b6;
+                       color: white;
+                       text-decoration: none;
+                       padding: 9px 18px;
+                       border-radius: 20px;
+                       font-size: 14px;
+                   ">
+
+                    🗺️ Route Planner
+
+                </a>
+
+
+                <!-- Share Trip -->
+
+                <form action="/trip/share"
+                      method="post"
+                      style="display: inline;">
+
+                    <input
+                        type="hidden"
+                        name="tripId"
+                        th:value="${trip.id}">
+
+                    <button
+                        type="submit"
+                        style="
+                            margin-top: 15px;
+                            margin-left: 8px;
+                            background: #6a4c93;
+                            color: white;
+                            border: none;
+                            padding: 9px 18px;
+                            border-radius: 20px;
+                            font-size: 14px;
+                            cursor: pointer;
+                        ">
+
+                        🔗 Share Trip
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- Empty Trips -->
+
+        <div class="empty"
+             th:if="${#lists.isEmpty(trips)}">
+
+            <h2>
+                🧳 No trips yet
+            </h2>
+
+            <p>
+                Create your first trip using the form above.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        © 2026 TravelPlanner | Plan • Explore • Travel ✈️
+
+    </footer>
+
+</body>
+
+</html>

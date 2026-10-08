@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TravelPlanner - Budget</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fb;
+            color: #222;
+        }
+
+        nav {
+            background: #023e8a;
+            padding: 18px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        nav .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #023e8a;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .budget-box {
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: white;
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
+
+        .budget-box h2 {
+            margin-bottom: 10px;
+        }
+
+        .budget-amount {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .form-box h2 {
+            color: #023e8a;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            background: #0077b6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #023e8a;
+        }
+
+        .success {
+            background: #d8f3dc;
+            color: #2d6a4f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .expense-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .expense-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expense-info h3 {
+            color: #023e8a;
+            margin-bottom: 6px;
+        }
+
+        .expense-info p {
+            color: #666;
+        }
+
+        .expense-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d62828;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            text-decoration: none;
+            background: #555;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        ✈️ TravelPlanner
+    </div>
+
+    <div>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/trips">My Trips</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</nav>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>💰 Trip Budget</h1>
+
+        <p>
+            Manage expenses for:
+            <strong th:text="${trip.tripName}">
+                My Trip
+            </strong>
+        </p>
+
+        <p>
+            Destination:
+            <strong th:text="${trip.destination.name}">
+                Destination
+            </strong>
+        </p>
+
+    </div>
+
+
+	<div class="budget-box">
+
+	    <h2>💵 Planned Budget</h2>
+
+	    <div class="budget-amount">
+	        ₹ <span th:text="${trip.budget}">0</span>
+	    </div>
+
+	    <hr style="margin: 20px 0; border: none; border-top: 1px solid rgba(255,255,255,0.4);">
+
+	    <p style="font-size: 16px; margin-bottom: 8px;">
+	        💸 Total Expenses
+	    </p>
+
+	    <div style="font-size: 25px; font-weight: bold;">
+	        ₹ <span th:text="${totalExpenses}">0</span>
+	    </div>
+
+	    <p style="font-size: 16px; margin-top: 20px; margin-bottom: 8px;">
+	        ✅ Remaining Budget
+	    </p>
+
+	    <div style="font-size: 25px; font-weight: bold;">
+	        ₹ <span th:text="${remainingBudget}">0</span>
+	    </div>
+
+	</div>
+
+
+    <div th:if="${success}" class="success"
+         th:text="${success}">
+        Expense added successfully!
+    </div>
+
+
+    <div class="form-box">
+
+        <h2>➕ Add Expense</h2>
+
+        <form action="/budget/create" method="post">
+
+            <input type="hidden"
+                   name="tripId"
+                   th:value="${trip.id}">
+
+            <div class="form-group">
+
+                <label>Expense Category</label>
+
+                <select name="category" required>
+
+                    <option value="">Select Category</option>
+                    <option value="Transportation">🚗 Transportation</option>
+                    <option value="Accommodation">🏨 Accommodation</option>
+                    <option value="Food">🍴 Food</option>
+                    <option value="Shopping">🛍️ Shopping</option>
+                    <option value="Activities">🎯 Activities</option>
+                    <option value="Other">📦 Other</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Description</label>
+
+                <input type="text"
+                       name="description"
+                       placeholder="Example: Hotel booking"
+                       required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Amount (₹)</label>
+
+                <input type="number"
+                       name="amount"
+                       step="0.01"
+                       min="0"
+                       placeholder="Example: 5000"
+                       required>
+
+            </div>
+
+
+            <button type="submit">
+                ➕ Add Expense
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <h2 style="margin-bottom: 20px; color: #023e8a;">
+        📋 Expense History
+    </h2>
+
+
+    <div class="expense-list">
+
+        <div class="expense-card"
+             th:each="expense : ${expenses}"
+             th:if="${expense.trip.id == trip.id}">
+
+            <div class="expense-info">
+
+                <h3 th:text="${expense.category}">
+                    Food
+                </h3>
+
+                <p th:text="${expense.description}">
+                    Restaurant
+                </p>
+
+            </div>
+
+            <div class="expense-amount">
+
+                ₹ <span th:text="${expense.amount}">
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="empty"
+             th:if="${#lists.isEmpty(expenses)}">
+
+            💸 No expenses added yet.
+
+            <br><br>
+
+            Start adding your travel expenses above.
+
+        </div>
+
+    </div>
+
+
+    <a href="/trips" class="back-btn">
+        ← Back to My Trips
+    </a>
+
+</div>
+
+</body>
+
+</html>

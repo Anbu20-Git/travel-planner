@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>TravelPlanner - Transportation</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fb;
+            color: #222;
+        }
+
+        nav {
+            background: #023e8a;
+            padding: 18px 60px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            color: white;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #023e8a;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 6px;
+        }
+
+        .form-box {
+            background: white;
+            padding: 30px;
+
+            border-radius: 18px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            margin-bottom: 30px;
+        }
+
+        .form-box h2 {
+            color: #023e8a;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+            border-radius: 8px;
+
+            font-size: 15px;
+        }
+
+        button {
+            background: #0077b6;
+            color: white;
+
+            border: none;
+
+            padding: 12px 25px;
+
+            border-radius: 25px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #023e8a;
+        }
+
+        .success {
+            background: #d8f3dc;
+            color: #2d6a4f;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+        }
+
+        .transport-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .transport-card {
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 15px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+
+        .transport-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 15px;
+        }
+
+        .transport-type {
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #023e8a;
+        }
+
+        .transport-cost {
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #d62828;
+        }
+
+        .route {
+            font-size: 16px;
+
+            color: #444;
+
+            margin-bottom: 10px;
+        }
+
+        .time {
+            color: #666;
+
+            font-size: 14px;
+        }
+
+        .empty {
+            background: white;
+
+            padding: 30px;
+
+            text-align: center;
+
+            border-radius: 15px;
+
+            color: #777;
+        }
+
+        .back-btn {
+            display: inline-block;
+
+            margin-top: 25px;
+
+            background: #555;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 10px 20px;
+
+            border-radius: 20px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <div class="logo">
+        ✈️ TravelPlanner
+    </div>
+
+    <div>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/trips">
+            My Trips
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <div class="header">
+
+        <h1>
+            🚗 Transportation
+        </h1>
+
+        <p>
+            Trip:
+            <strong th:text="${trip.tripName}">
+                My Trip
+            </strong>
+        </p>
+
+        <p>
+            Destination:
+            <strong th:text="${trip.destination.name}">
+                Destination
+            </strong>
+        </p>
+
+    </div>
+
+
+    <div
+        th:if="${success}"
+        class="success"
+        th:text="${success}">
+
+        Transportation added successfully!
+
+    </div>
+
+
+    <div class="form-box">
+
+        <h2>
+            ➕ Add Transportation
+        </h2>
+
+
+        <form
+            action="/transportation/create"
+            method="post">
+
+
+            <input
+                type="hidden"
+                name="tripId"
+                th:value="${trip.id}">
+
+
+            <div class="form-group">
+
+                <label>
+                    Transportation Type
+                </label>
+
+                <select
+                    name="type"
+                    required>
+
+                    <option value="">
+                        Select Type
+                    </option>
+
+                    <option value="Flight">
+                        ✈️ Flight
+                    </option>
+
+                    <option value="Train">
+                        🚆 Train
+                    </option>
+
+                    <option value="Bus">
+                        🚌 Bus
+                    </option>
+
+                    <option value="Taxi">
+                        🚕 Taxi
+                    </option>
+
+                    <option value="Car">
+                        🚗 Car
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Source
+                </label>
+
+                <input
+                    type="text"
+                    name="source"
+                    placeholder="Example: Chennai"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Destination
+                </label>
+
+                <input
+                    type="text"
+                    name="destination"
+                    placeholder="Example: Paris"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Departure Time
+                </label>
+
+                <input
+                    type="datetime-local"
+                    name="departureTime"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Arrival Time
+                </label>
+
+                <input
+                    type="datetime-local"
+                    name="arrivalTime"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Cost (₹)
+                </label>
+
+                <input
+                    type="number"
+                    name="cost"
+                    step="0.01"
+                    min="0"
+                    placeholder="Example: 25000"
+                    required>
+
+            </div>
+
+
+            <button type="submit">
+                ➕ Add Transportation
+            </button>
+
+
+        </form>
+
+    </div>
+
+
+    <h2
+        style="margin-bottom: 20px; color: #023e8a;">
+
+        🧳 Transportation History
+
+    </h2>
+
+
+    <div class="transport-list">
+
+
+        <div
+            class="transport-card"
+            th:each="transport : ${transportations}"
+            th:if="${transport.trip.id == trip.id}">
+
+
+            <div class="transport-top">
+
+                <div
+                    class="transport-type"
+                    th:text="${transport.type}">
+
+                    Flight
+
+                </div>
+
+
+                <div
+                    class="transport-cost">
+
+                    ₹ <span
+                        th:text="${transport.cost}">
+                        0
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="route">
+
+                📍
+
+                <strong
+                    th:text="${transport.source}">
+                    Chennai
+                </strong>
+
+                →
+
+                <strong
+                    th:text="${transport.destination}">
+                    Paris
+                </strong>
+
+            </div>
+
+
+            <div
+                class="time">
+
+                🕐 Departure:
+
+                <span
+                    th:text="${#temporals.format(transport.departureTime, 'dd MMM yyyy, HH:mm')}">
+                    10 Nov 2026, 10:00
+                </span>
+
+                <br>
+
+                🕐 Arrival:
+
+                <span
+                    th:text="${#temporals.format(transport.arrivalTime, 'dd MMM yyyy, HH:mm')}">
+                    11 Nov 2026, 18:00
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="empty"
+            th:if="${#lists.isEmpty(transportations)}">
+
+            🚗 No transportation added yet.
+
+            <br><br>
+
+            Add your flight, train, bus or other transport above.
+
+        </div>
+
+
+    </div>
+
+
+    <a
+        th:href="@{/trips}"
+        class="back-btn">
+
+        ← Back to My Trips
+
+    </a>
+
+
+</div>
+
+
+</body>
+
+</html>

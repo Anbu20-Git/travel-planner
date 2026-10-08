@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>TravelPlanner - Reviews</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fb;
+            color: #222;
+        }
+
+        nav {
+            background: #023e8a;
+            padding: 18px 60px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            color: white;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+
+            border-radius: 18px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #023e8a;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .form-box {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+
+            margin-bottom: 35px;
+        }
+
+        .form-box h2 {
+            color: #023e8a;
+
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 120px;
+
+            resize: vertical;
+        }
+
+        .rating {
+            display: flex;
+
+            flex-direction: row-reverse;
+
+            justify-content: flex-end;
+
+            gap: 5px;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 35px;
+
+            color: #ccc;
+
+            cursor: pointer;
+        }
+
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffc107;
+        }
+
+        button {
+            background: #0077b6;
+
+            color: white;
+
+            border: none;
+
+            padding: 12px 25px;
+
+            border-radius: 25px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #023e8a;
+        }
+
+        .success {
+            background: #d8f3dc;
+
+            color: #2d6a4f;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+        }
+
+        .review-list {
+            display: grid;
+
+            gap: 18px;
+        }
+
+        .review-card {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 16px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+
+        .review-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+        .destination {
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #023e8a;
+        }
+
+        .stars {
+            color: #ffc107;
+
+            font-size: 20px;
+        }
+
+        .review-comment {
+            color: #555;
+
+            line-height: 1.6;
+
+            margin-bottom: 12px;
+        }
+
+        .review-user {
+            color: #888;
+
+            font-size: 14px;
+        }
+
+        .empty {
+            background: white;
+
+            padding: 30px;
+
+            text-align: center;
+
+            border-radius: 15px;
+
+            color: #777;
+        }
+
+        .back-btn {
+            display: inline-block;
+
+            margin-top: 25px;
+
+            background: #555;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 10px 20px;
+
+            border-radius: 20px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <div class="logo">
+        ✈️ TravelPlanner
+    </div>
+
+    <div>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/destinations">
+            Destinations
+        </a>
+
+        <a href="/trips">
+            My Trips
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <div class="header">
+
+        <h1>
+            ⭐ Travel Reviews
+        </h1>
+
+        <p>
+            Share your travel experience and help other travelers.
+        </p>
+
+    </div>
+
+
+    <div
+        th:if="${success}"
+        class="success"
+        th:text="${success}">
+
+        Review submitted successfully!
+
+    </div>
+
+
+    <div class="form-box">
+
+        <h2>
+            ✍️ Write a Review
+        </h2>
+
+
+        <form
+            action="/reviews/create"
+            method="post">
+
+
+            <div class="form-group">
+
+                <label>
+                    Choose Destination
+                </label>
+
+                <select
+                    name="destinationId"
+                    required>
+
+                    <option value="">
+                        Select Destination
+                    </option>
+
+                    <option
+                        th:each="destination : ${destinations}"
+                        th:value="${destination.id}"
+                        th:text="${destination.name + ' - ' + destination.country}">
+
+                        Paris - France
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Your Rating
+                </label>
+
+
+                <div class="rating">
+
+                    <input
+                        type="radio"
+                        id="star5"
+                        name="rating"
+                        value="5"
+                        required>
+
+                    <label for="star5">
+                        ★
+                    </label>
+
+
+                    <input
+                        type="radio"
+                        id="star4"
+                        name="rating"
+                        value="4">
+
+                    <label for="star4">
+                        ★
+                    </label>
+
+
+                    <input
+                        type="radio"
+                        id="star3"
+                        name="rating"
+                        value="3">
+
+                    <label for="star3">
+                        ★
+                    </label>
+
+
+                    <input
+                        type="radio"
+                        id="star2"
+                        name="rating"
+                        value="2">
+
+                    <label for="star2">
+                        ★
+                    </label>
+
+
+                    <input
+                        type="radio"
+                        id="star1"
+                        name="rating"
+                        value="1">
+
+                    <label for="star1">
+                        ★
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Your Review
+                </label>
+
+                <textarea
+                    name="comment"
+                    placeholder="Tell us about your travel experience..."
+                    required></textarea>
+
+            </div>
+
+
+            <button type="submit">
+                ⭐ Submit Review
+            </button>
+
+
+        </form>
+
+    </div>
+
+
+    <h2
+        style="margin-bottom: 20px; color: #023e8a;">
+
+        💬 Traveler Reviews
+
+    </h2>
+
+
+    <div class="review-list">
+
+
+        <div
+            class="review-card"
+            th:each="review : ${reviews}">
+
+
+            <div class="review-top">
+
+                <div class="destination">
+
+                    📍
+
+                    <span
+                        th:text="${review.destination.name}">
+                        Paris
+                    </span>
+
+                </div>
+
+
+                <div class="stars">
+
+                    <span
+                        th:each="i : ${#numbers.sequence(1, review.rating)}">
+                        ★
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="review-comment"
+                th:text="${review.comment}">
+
+                Amazing place!
+
+            </div>
+
+
+            <div class="review-user">
+
+                👤
+
+                <span
+                    th:text="${review.user.name}">
+                    Anbu
+                </span>
+
+                ·
+
+                <span
+                    th:text="${#temporals.format(review.reviewDate, 'dd MMM yyyy')}">
+                    07 Oct 2026
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="empty"
+            th:if="${#lists.isEmpty(reviews)}">
+
+            ⭐ No reviews yet.
+
+            <br><br>
+
+            Be the first traveler to share an experience!
+
+        </div>
+
+
+    </div>
+
+
+    <a
+        href="/dashboard"
+        class="back-btn">
+
+        ← Back to Dashboard
+
+    </a>
+
+
+</div>
+
+
+</body>
+
+</html>

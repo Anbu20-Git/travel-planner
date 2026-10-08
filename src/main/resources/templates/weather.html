@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>TravelPlanner - Weather</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #caf0f8, #90e0ef);
+            color: #023e8a;
+        }
+
+        nav {
+            background: #023e8a;
+            padding: 18px 60px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            color: white;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 50px auto;
+        }
+
+        .weather-card {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 25px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.15);
+
+            text-align: center;
+        }
+
+        .weather-icon {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #023e8a;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            gap: 12px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        input {
+            flex: 1;
+            padding: 14px 18px;
+
+            border: 1px solid #ccc;
+            border-radius: 30px;
+
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #0077b6;
+        }
+
+        button {
+            background: #0077b6;
+            color: white;
+
+            border: none;
+            border-radius: 30px;
+
+            padding: 14px 25px;
+
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #023e8a;
+        }
+
+        .result {
+            margin-top: 35px;
+
+            background: #e0f7fa;
+
+            padding: 25px;
+
+            border-radius: 18px;
+
+            font-size: 24px;
+            font-weight: bold;
+
+            color: #023e8a;
+        }
+
+        .searched-city {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #555;
+        }
+
+        .error {
+            margin-top: 25px;
+
+            background: #ffe5e5;
+            color: #d90429;
+
+            padding: 15px;
+
+            border-radius: 10px;
+        }
+
+        .back {
+            display: inline-block;
+
+            margin-top: 30px;
+
+            background: #555;
+            color: white;
+
+            text-decoration: none;
+
+            padding: 11px 22px;
+
+            border-radius: 25px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <div class="logo">
+        ✈️ TravelPlanner
+    </div>
+
+    <div>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/trips">
+            My Trips
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <div class="weather-card">
+
+        <div class="weather-icon">
+            🌤️
+        </div>
+
+
+        <h1>
+            Travel Weather
+        </h1>
+
+
+        <p class="subtitle">
+            Check the current weather before planning your trip.
+        </p>
+
+
+        <form action="/weather" method="get">
+
+            <input
+                type="text"
+                name="city"
+                placeholder="Enter city name..."
+                required>
+
+            <button type="submit">
+                🔍 Search
+            </button>
+
+        </form>
+
+
+        <div
+            class="result"
+            th:if="${weather}">
+
+            <div
+                class="searched-city"
+                th:text="'Weather in ' + ${searchedCity}">
+                Weather in Paris
+            </div>
+
+            <div th:text="${weather}">
+                Paris: ☀️ +18°C
+            </div>
+
+        </div>
+
+
+        <div
+            class="error"
+            th:if="${error}"
+            th:text="${error}">
+
+            Unable to fetch weather.
+
+        </div>
+
+
+        <a
+            href="/dashboard"
+            class="back">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
