@@ -1,6 +1,7 @@
 package com.travelplanner.controller;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import com.travelplanner.service.ReviewService;
 import com.travelplanner.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+
 
 @Controller
 public class ReviewController {
@@ -93,7 +95,9 @@ public class ReviewController {
         review.setComment(comment);
         review.setReviewDate(LocalDateTime.now());
 
-        reviewService.saveReview(review);
+        review.setReviewDate(
+                LocalDateTime.now(ZoneId.of("Asia/Kolkata"))
+        );
 
         redirectAttributes.addFlashAttribute(
                 "success",

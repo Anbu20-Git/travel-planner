@@ -2,6 +2,7 @@ package com.travelplanner.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -140,7 +141,7 @@ public class BudgetController {
         expense.setCategory(category);
         expense.setDescription(description);
         expense.setAmount(amount);
-        expense.setExpenseDate(LocalDate.now());
+        expense.setExpenseDate(LocalDate.now(ZoneId.of("Asia/Kolkata")));
 
         expenseService.saveExpense(expense);
 
