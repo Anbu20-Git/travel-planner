@@ -93,7 +93,9 @@ public class ReviewController {
         review.setDestination(destination);
         review.setRating(rating);
         review.setComment(comment);
-        review.setReviewDate(LocalDateTime.now());
+        review.setReviewDate(
+                LocalDateTime.now(ZoneId.of("Asia/Kolkata"))
+        );
 
         review.setReviewDate(
                 LocalDateTime.now(ZoneId.of("Asia/Kolkata"))
