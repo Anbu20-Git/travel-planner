@@ -97,9 +97,7 @@ public class ReviewController {
                 LocalDateTime.now(ZoneId.of("Asia/Kolkata"))
         );
 
-        review.setReviewDate(
-                LocalDateTime.now(ZoneId.of("Asia/Kolkata"))
-        );
+        reviewService.saveReview(review);
 
         redirectAttributes.addFlashAttribute(
                 "success",
