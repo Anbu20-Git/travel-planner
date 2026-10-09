@@ -282,8 +282,12 @@
                 ✈️ Create New Trip
             </h2>
 
-            <form action="/trips/create"
-                  method="post">
+			<form th:action="@{/trips/create}"
+			      method="post">
+
+			    <input type="hidden"
+			           th:name="${_csrf.parameterName}"
+			           th:value="${_csrf.token}">
 
                 <div class="form-grid">
 
@@ -561,14 +565,17 @@
 
                 <!-- Share Trip -->
 
-                <form action="/trip/share"
-                      method="post"
-                      style="display: inline;">
+				<form th:action="@{/trip/share}"
+				      method="post"
+				      style="display: inline;">
 
-                    <input
-                        type="hidden"
-                        name="tripId"
-                        th:value="${trip.id}">
+				    <input type="hidden"
+				           th:name="${_csrf.parameterName}"
+				           th:value="${_csrf.token}">
+
+				    <input type="hidden"
+				           name="tripId"
+				           th:value="${trip.id}">
 
                     <button
                         type="submit"

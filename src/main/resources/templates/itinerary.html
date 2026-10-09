@@ -290,12 +290,16 @@
                 ➕ Add Itinerary Activity
             </h2>
 
-            <form action="/itinerary/create"
-                  method="post">
+			<form th:action="@{/itinerary/create}"
+			      method="post">
 
-                <input type="hidden"
-                       name="tripId"
-                       th:value="${trip.id}">
+			    <input type="hidden"
+			           th:name="${_csrf.parameterName}"
+			           th:value="${_csrf.token}">
+
+			    <input type="hidden"
+			           name="tripId"
+			           th:value="${trip.id}">
 
                 <div class="form-grid">
 

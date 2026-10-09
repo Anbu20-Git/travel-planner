@@ -301,15 +301,21 @@
         </h2>
 
 
-        <form
-            action="/transportation/create"
-            method="post">
+		<form
+		    th:action="@{/transportation/create}"
+		    method="post">
 
+		    <!-- CSRF Token -->
+		    <input
+		        type="hidden"
+		        th:name="${_csrf.parameterName}"
+		        th:value="${_csrf.token}">
 
-            <input
-                type="hidden"
-                name="tripId"
-                th:value="${trip.id}">
+		    <!-- Trip ID -->
+		    <input
+		        type="hidden"
+		        name="tripId"
+		        th:value="${trip.id}">
 
 
             <div class="form-group">
