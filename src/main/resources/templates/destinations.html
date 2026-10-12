@@ -247,12 +247,19 @@
 
                     </div>
 
-                    <a href="/trips"
-                       class="plan-btn">
+				<div style="display: flex; flex-wrap: wrap; gap: 10px;">
 
-                        Plan Trip
+					    <a th:href="@{/destinations/{name}/explore(name=${destination.name})}"
+					       class="plan-btn">
+					        🗺️ Explore Places &amp; Food
+					    </a>
 
-                    </a>
+					    <a href="/trips"
+					       class="plan-btn">
+					        ✈️ Plan Trip
+					    </a>
+
+					</div>
 
                 </div>
 
