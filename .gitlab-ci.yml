@@ -5,11 +5,11 @@ stages:
 build:
   stage: build
   script:
-    - echo "Building Travel Planner application..."
-    - .\mvnw.cmd -B -DskipTests package
+    - 'Write-Host "Building Travel Planner application..."'
+    - '& .\mvnw.cmd -B -DskipTests package'
 
 test:
   stage: test
   script:
-    - echo "Running Travel Planner tests..."
-    - .\mvnw.cmd -B test
+    - 'Write-Host "Running Travel Planner tests..."'
+    - '& .\mvnw.cmd -B test'
