@@ -1,26 +1,27 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:github-actions:.github/workflows,cicd:gitlab-workflows:.,cicd:jenkins:.,deps:java:.
 version: 2.1
+
 jobs:
   test-java:
     docker:
       - image: cimg/openjdk:21.0
+
     steps:
       - checkout
+
       - run:
           name: Check Java and Maven versions
           command: |
-            java  -version
-            mvn   -version
+            java -version
+            mvn -version
+
       - run:
           name: Build and test Travel Planner
           command: mvn -B verify
-      -store_test_results:
+
+      - store_test_results:
           path: target/surefire-reports
+
 workflows:
   build-and-test:
     jobs:
       - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
