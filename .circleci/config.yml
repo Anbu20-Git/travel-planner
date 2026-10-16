@@ -17,6 +17,22 @@ jobs:
       - run:
           name: Build and test Travel Planner
           command: mvn -B verify
+          
+      - run:   
+          name: Prepare release JAR 
+          command: | 
+            JAR_FILE=$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*.jar.original' | head -n 1) 
+            if [ -z "$JAR_FILE" ]; then 
+              echo "ERROR: No application JAR found in target/" 
+              exit 1 
+              fi 
+              mkdir -p release 
+              cp "$JAR_FILE" release/travel-planner.jar 
+              echo "Release JAR prepared successfully" 
+              
+      - store_artifacts: 
+          path: release/travel-planner.jar 
+          destination: travel-planner-release
 
       - store_test_results:
           path: target/surefire-reports
