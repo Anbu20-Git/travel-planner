@@ -25,6 +25,14 @@ jobs:
           root: .
           paths:
             - target
+
+release-artifact:
+  docker:
+    - image: cimg/openjdk:21.0
+
+  steps:
+    - attach_workspace:
+        at: .
           
       - run:   
           name: Prepare versioned release 
