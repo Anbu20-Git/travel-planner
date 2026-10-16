@@ -17,27 +17,41 @@ jobs:
       - run:
           name: Build and test Travel Planner
           command: mvn -B verify
+
+      - store_test_results:
+          path: target/surefire-reports
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - target
           
       - run:   
-          name: Prepare release JAR 
+          name: Prepare versioned release 
           command: | 
             JAR_FILE=$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*.jar.original' | head -n 1) 
             if [ -z "$JAR_FILE" ]; then 
-              echo "ERROR: No application JAR found in target/" 
+              echo "ERROR: No application JAR found." 
               exit 1 
-              fi 
-              mkdir -p release 
-              cp "$JAR_FILE" release/travel-planner.jar 
-              echo "Release JAR prepared successfully" 
+            fi
+            VERSION="build-${CIRCLE_BUILD_NUM}"
+            mkdir -p release 
+            cp "$JAR_FILE" "release/travel-planner-${VERSION}.jar" 
+            echo "Release version: ${VERSION}"
+            ls -lh release/
               
       - store_artifacts: 
           path: release/travel-planner.jar 
           destination: travel-planner-release
 
-      - store_test_results:
-          path: target/surefire-reports
-
 workflows:
-  build-and-test:
+  build-test-release:
     jobs:
       - test-java
+      
+         - release-artifact:
+             requires:
+               - test-java
+             filters:
+               branches:
+                 only: main
