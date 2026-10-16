@@ -49,9 +49,9 @@ workflows:
     jobs:
       - test-java
       
-         - release-artifact:
-             requires:
-               - test-java
-             filters:
-               branches:
-                 only: main
+      - release-artifact:
+          requires:
+            - test-java
+          filters:
+            branches:
+              only: main
