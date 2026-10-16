@@ -51,7 +51,7 @@ jobs:
             ls -lh release/
               
       - store_artifacts: 
-          path: release/travel-planner.jar 
+          path: release
           destination: travel-planner-release
 
 workflows:
